@@ -5,7 +5,8 @@ from scrapper import pick_helper
 picks_team_1 = [[""] * 5 for _ in range(5)]
 picks_team_2 = [[""] * 5 for _ in range(5)]
 
-image_directory = "YOUR_PATH_TO_ICONS"
+script_dir = os.path.dirname(os.path.abspath(__file__))  # Get script directory
+image_directory = os.path.join(script_dir, "..", "icons", "champion")
 pick_url = ""  # Store the URL input
 
 
@@ -14,6 +15,7 @@ def script_description():
 
 
 def script_properties():
+    print(image_directory)
     # Adds a text field for the URL input in OBS
     props = obs.obs_properties_create()
     obs.obs_properties_add_text(props, "pick_url", "Pick Helper URL", obs.OBS_TEXT_DEFAULT)

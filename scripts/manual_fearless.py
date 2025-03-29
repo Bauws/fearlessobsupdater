@@ -11,7 +11,8 @@ previous_picks_team_2 = [[""] * 5 for _ in range(5)]
 previous_headers_team_1 = [""] * 5
 previous_headers_team_2 = [""] * 5
 
-image_directory = "YOUR_ PATH_TO_ICONS"
+script_dir = os.path.dirname(os.path.abspath(__file__))  # Get script directory
+image_directory = os.path.join(script_dir, "..", "icons", "champion")
 
 
 def script_description():
