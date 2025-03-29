@@ -5,7 +5,7 @@ from scrapper import pick_helper
 picks_team_1 = [[""] * 5 for _ in range(5)]
 picks_team_2 = [[""] * 5 for _ in range(5)]
 
-image_directory = "C:/Users/lukas/PycharmProjects/ChampSelect/Icons/champion/"
+image_directory = "YOUR_PATH_TO_ICONS"
 pick_url = ""  # Store the URL input
 
 
