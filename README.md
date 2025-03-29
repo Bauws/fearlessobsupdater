@@ -137,6 +137,4 @@ If you need help or want to be part of the project, contact me via GitHub or ema
 
 ## License
 
----
-
 [MIT License](https://choosealicense.com/licenses/mit/)
