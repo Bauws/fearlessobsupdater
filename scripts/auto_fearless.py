@@ -15,11 +15,16 @@ def script_description():
 
 
 def script_properties():
-    print(image_directory)
     # Adds a text field for the URL input in OBS
     props = obs.obs_properties_create()
+    obs.obs_properties_add_button(props, "reset_overlay_button", "Reset Overlay", reset_overlay_button_callback)
     obs.obs_properties_add_text(props, "pick_url", "Pick Helper URL", obs.OBS_TEXT_DEFAULT)
     return props
+
+
+def reset_overlay_button_callback(pressed, prop):
+    if pressed:
+        reset_overlay()
 
 
 def script_update(settings):
