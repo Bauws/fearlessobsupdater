@@ -1,21 +1,15 @@
 # Fearless OBS Updater
 
----
-
 This script updates your sources inside OBS to display the already picked champions of the series.
 Currently, it is only possible to track matches of the Prime League.
 
 ## Install Python
-
----
 
 To use the script, you need to download Python 3.9.10 or later from the official Python website.
 
 [Download Python 3.9.10](https://www.python.org/downloads/release/python-3910/)
 
 ## Install Requirements
-
----
 
 ### Windows:
 
@@ -25,8 +19,6 @@ Open CMD and run:
 
 ## Setup Script in OBS
 
----
-
 1. Go to **Tools** -> **Scripts** in OBS.
 2. Under **Python-Settings**, insert the location of your local Python directory `C:/Users/{name}/AppData/Local/Programs/Python/Python39`
 3. Add the scripts `manual_fearless.py` and `auto_fearless.py` by clicking the **+** icon.
@@ -34,8 +26,6 @@ Open CMD and run:
 5. Return to the scripts tab and start using them.
 
 ## Setup Sources in OBS
-
----
 
 The most important part is the naming of the sources!
 
@@ -78,8 +68,6 @@ Repeat this for all 5 picks and for all 5 games. If you leave one out, you will 
 
 ## How to Use the Scripts
 
----
-
 ### Auto Fearless
 
 The auto fearless script works automatically. When you open the script, you'll see an input field where you can insert a match URL.
@@ -119,19 +107,13 @@ Unlike the auto script, you don't need a special reset button. The script update
 
 ## FAQ - Coming Soon
 
----
-
 A FAQ section will be added once common issues arise.
 
 ## How to Contribute
 
----
-
 If you have suggestions to improve the code or want to contribute, feel free to create a pull request.
 
 ## Contact Me
-
----
 
 If you need help or want to be part of the project, contact me via GitHub or email: **lukas.zimmermann147@outlook.com**
 
