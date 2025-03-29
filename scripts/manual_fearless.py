@@ -60,14 +60,14 @@ def script_update(settings):
 
         # Check and update picks
         for blue_team in range(5):
-            new_pick = obs.obs_data_get_string(settings, f"game_{game_number + 1}_blue_pick_{blue_team + 1}")
+            new_pick = obs.obs_data_get_string(settings, f"game_{game_number + 1}_blue_pick_{blue_team + 1}").lower().replace("'", "").replace(" ", "")
             if new_pick != previous_picks_team_1[game_number][blue_team]:
                 previous_picks_team_1[game_number][blue_team] = new_pick
                 update_image_source(f"game_{game_number + 1}_blue_pick_{blue_team + 1}_image", new_pick)
                 updated = True
 
         for red_team in range(5):
-            new_pick = obs.obs_data_get_string(settings, f"game_{game_number + 1}_red_pick_{red_team + 1}")
+            new_pick = obs.obs_data_get_string(settings, f"game_{game_number + 1}_red_pick_{red_team + 1}").lower().replace("'", "").replace(" ", "")
             if new_pick != previous_picks_team_2[game_number][red_team]:
                 previous_picks_team_2[game_number][red_team] = new_pick
                 update_image_source(f"game_{game_number + 1}_red_pick_{red_team + 1}_image", new_pick)
