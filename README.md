@@ -13,6 +13,8 @@ To use the script, you need to download Python 3.9.10 or later from the official
 
 [Download Python 3.9.10](https://www.python.org/downloads/release/python-3910/)
 
+Make sure to click on "Add to path" or something like that when the installer appears!
+
 ## Install Requirements
 
 ### Windows:
