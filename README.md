@@ -1,7 +1,11 @@
 # Fearless OBS Updater
 
-This script updates your sources inside OBS to display the already picked champions of the series.
-Currently, it is only possible to track matches of the Prime League.
+This script updates your sources inside OBS to display the already picked champions of the series.  
+
+Currently, it is only possible to track matches of the 1st and 2nd division of the "Techniker Prime League". 
+This tool is meant for **Co-Streamers** of these divisions.
+
+This is due to the fact that only 1st and 2nd division are live updated on the website!
 
 ## Install Python
 
@@ -16,6 +20,8 @@ To use the script, you need to download Python 3.9.10 or later from the official
 Open CMD and run:
 
 `pip install -r /path/to/requirements.txt`
+
+e.g. `C:\Users\MartinPC\Downloads\fearlessobsupdater-main\requirements.txt`
 
 ## Setup Script in OBS
 
