@@ -31,13 +31,20 @@ def pick_helper(url):
                     for pick in pick_list.find_all("img"):
                         if i == 0:
                             champion = pick.get('title').replace("'", "").replace(" ", "").lower()
-                            team_1_picks.append(champion)
+                            if champion:
+                                team_1_picks.append(champion)
                         else:
                             champion = pick.get('title').replace("'", "").replace(" ", "").lower()
-                            team_2_picks.append(champion)
-            match_data.append(team_1_picks)
-            match_data.append(team_2_picks)
-            series_data.append(match_data)
+                            if champion:
+                                team_2_picks.append(champion)
+
+            # Only append if contains champions
+            if team_1_picks:
+                match_data.append(team_1_picks)
+            if team_2_picks:
+                match_data.append(team_2_picks)
+            if match_data:
+                series_data.append(match_data)
     else:
         print(f"Fehler: {response.status_code}")
 
