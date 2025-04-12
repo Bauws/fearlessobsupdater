@@ -72,7 +72,7 @@ def pick_helper_v2(url):
 
     team_names = match_info.find_all('h2')
     match_data['team1']['team_name_short'] = team_names[0].text
-    match_data['team2']['team_name_short'] = team_names[0].text
+    match_data['team2']['team_name_short'] = team_names[1].text
 
     div_img_back = match_info.find_all('div', class_='img-back')
 
@@ -93,7 +93,6 @@ def pick_helper_v2(url):
 
     match_data['team1']['team_lineup'] = team1_lineup
     match_data['team2']['team_lineup'] = team2_lineup
-
 
     team1_games = {}
     team2_games = {}
@@ -133,4 +132,4 @@ def pick_helper_v2(url):
 
 
 if __name__ == '__main__':
-    pick_helper_v2('https://www.primeleague.gg/de/matches/591905-teamorangegaming-academy-vs-a-one-man-army')
+    print(pick_helper_v2('https://www.primeleague.gg/de/matches/591905-teamorangegaming-academy-vs-a-one-man-army'))
