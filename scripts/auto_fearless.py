@@ -82,21 +82,21 @@ def fetch_and_update_picks():
             continue
 
         # Update Headers
-        update_text_source(f"blue_header_{game_number + 1}", f"Game {game_number + 1}")
-        update_text_source(f"red_header_{game_number + 1}", f"Game {game_number + 1}")
+        update_text_source(f"Game {game_number + 1} Header Blue", f"Game {game_number + 1}")
+        update_text_source(f"Game {game_number + 1} Header Red", f"Game {game_number + 1}")
 
         # Update team 1 picks
         for i, champ in enumerate(team_1_picks):
             if picks_team_1[game_number][i] != champ:
                 picks_team_1[game_number][i] = champ
-                update_image_source(f"game_{game_number + 1}_blue_pick_{i + 1}_image", champ)
+                update_image_source(f"Game {game_number + 1} Blue Pick {i + 1}", champ)
                 updated = True
 
         # Update team 2 picks
         for i, champ in enumerate(team_2_picks):
             if picks_team_2[game_number][i] != champ:
                 picks_team_2[game_number][i] = champ
-                update_image_source(f"game_{game_number + 1}_red_pick_{i + 1}_image", champ)
+                update_image_source(f"Game {game_number + 1} Red Pick {i + 1}", champ)
                 updated = True
 
     if updated:
@@ -107,15 +107,15 @@ def clear_all_picks():
     # Removes all champion images from OBS
     for game_number in range(5):
         for i in range(5):
-            hide_image_source(f"game_{game_number + 1}_blue_pick_{i + 1}_image")
-            hide_image_source(f"game_{game_number + 1}_red_pick_{i + 1}_image")
+            hide_image_source(f"Game {game_number + 1} Blue Pick {i + 1}")
+            hide_image_source(f"Game {game_number + 1} Red Pick {i + 1}")
 
 
 def clear_all_headers():
     # Clears all game headers
     for game_number in range(5):
-        update_text_source(f"blue_header_{game_number + 1}", "")
-        update_text_source(f"red_header_{game_number + 1}", "")
+        update_text_source(f"Game {game_number + 1} Header Blue", "")
+        update_text_source(f"Game {game_number + 1} Header Red", "")
 
 
 def update_image_source(image_source_name, champion_name):
