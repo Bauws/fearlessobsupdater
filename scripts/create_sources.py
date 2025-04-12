@@ -25,6 +25,13 @@ def script_load(settings):
         source_name = source_data["name"]
         source_type = source_data["type"]
 
+        # Check if the source already exists
+        existing_source = obs.obs_get_source_by_name(source_name)
+        if existing_source:
+            obs.script_log(obs.LOG_WARNING, f"Source '{source_name}' already exists. Skipping creation.")
+            obs.obs_source_release(existing_source)
+            continue
+
         if source_type == "text_gdiplus":
             # Create source settings directly from the JSON for the source
             source_settings = obs.obs_data_create()
