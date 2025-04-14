@@ -59,13 +59,16 @@ def script_load(settings):
             # Create source settings directly from the JSON for the source
             source_settings = obs.obs_data_create()
 
-            icon_path = os.path.join(os.path.dirname(__file__), f'../icons/champion/{source_data["file"]}')
+            if "Logo" in source_data["name"]:
+                path = os.path.join(os.path.dirname(__file__), f'../icons/team/{source_data["file"]}')
+            else:
+                path = os.path.join(os.path.dirname(__file__), f'../icons/champion/{source_data["file"]}')
 
-            if not os.path.isfile(icon_path):
-                obs.script_log(obs.LOG_WARNING, f"Image file not found: {icon_path}")
+            if not os.path.isfile(path):
+                obs.script_log(obs.LOG_WARNING, f"Image file not found: {path}")
                 continue
 
-            obs.obs_data_set_string(source_settings, "file", icon_path)
+            obs.obs_data_set_string(source_settings, "file", path)
             obs.obs_data_set_int(source_settings, "width", 50)
             obs.obs_data_set_int(source_settings, "height", 50)
 
@@ -87,6 +90,13 @@ def script_load(settings):
                 if width > 0 and height > 0:
                     scale_x = 50 / width
                     scale_y = 50 / height
+                    scale = obs.vec2()
+                    obs.vec2_set(scale, scale_x, scale_y)
+                    obs.obs_sceneitem_set_scale(scene_item, scale)
+
+                if "Logo" in source_data["name"]:
+                    scale_x = 200 / width
+                    scale_y = 200 / height
                     scale = obs.vec2()
                     obs.vec2_set(scale, scale_x, scale_y)
                     obs.obs_sceneitem_set_scale(scene_item, scale)
