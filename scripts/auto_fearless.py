@@ -1,13 +1,15 @@
 import obspython as obs
 import os
-from scrapper import pick_helper
+from PIL import Image
+from io import BytesIO
+import requests
 
-picks_team_1 = [[""] * 5 for _ in range(5)]
-picks_team_2 = [[""] * 5 for _ in range(5)]
+from scrapper import pick_helper, pick_helper_v2
 
 script_dir = os.path.dirname(os.path.abspath(__file__))  # Get script directory
 image_directory = os.path.join(script_dir, "..", "icons", "champion")
-pick_url = ""  # Store the URL input
+teamlogo_directory = os.path.join(script_dir, "..", "icons", "team")
+# match_url = ""  # Store the URL input
 
 
 def script_description():
@@ -18,7 +20,11 @@ def script_properties():
     # Adds a text field for the URL input in OBS
     props = obs.obs_properties_create()
     obs.obs_properties_add_button(props, "reset_overlay_button", "Reset Overlay", reset_overlay_button_callback)
-    obs.obs_properties_add_text(props, "pick_url", "Pick Helper URL", obs.OBS_TEXT_DEFAULT)
+    obs.obs_properties_add_text(props, "match_url", "Match URL", obs.OBS_TEXT_DEFAULT)
+    combobox = obs.obs_properties_add_list(props, "side_selector", "Blue Side", obs.OBS_COMBO_TYPE_LIST,
+                                           obs.OBS_COMBO_FORMAT_STRING)
+    obs.obs_property_list_add_string(combobox, "Team 1", "team1")
+    obs.obs_property_list_add_string(combobox, "Team 2", "team2")
     return props
 
 
@@ -29,14 +35,10 @@ def reset_overlay_button_callback(pressed, prop):
 
 def script_update(settings):
     # Called when the script settings are changed. Updates picks from the new URL
-    global pick_url
-    new_url = obs.obs_data_get_string(settings, "pick_url")
-
-    if new_url and new_url != pick_url:
-        pick_url = new_url
-        print(f"New URL detected: {pick_url}")
-        reset_overlay()  # Clear all existing data before fetching new picks
-        fetch_and_update_picks()
+    blue_side = obs.obs_data_get_string(settings, "side_selector")
+    match_url = obs.obs_data_get_string(settings, "match_url")
+    reset_overlay()
+    fetch_and_update_picks(blue_side, match_url)
 
 
 def script_load(settings):
@@ -52,73 +54,125 @@ def reset_overlay():
     clear_all_headers()
 
 
-def fetch_and_update_picks():
-    # Fetches pick data from the provided URL and updates OBS sources
-    if not pick_url:
+def fetch_and_update_picks(blue_side=None, match_url=None):
+
+    if not match_url:
         print("No URL provided. Waiting for input...")
         return
 
-    print(f"Fetching picks from: {pick_url}")
-    data = pick_helper(pick_url)
+    print(f"Fetching picks from v2: {match_url}")
+    data = pick_helper_v2(match_url)
 
-    # If data is empty, remove all icons and headers
     if not data:
         print("No picks received. Clearing all sources...")
         reset_overlay()
         return
 
-    # Track if we need to update OBS
-    updated = False
+    if blue_side == "team1":
+        side_team1 = "Blue"
+        side_team2 = "Red"
+    else:
+        side_team1 = "Red"
+        side_team2 = "Blue"
 
-    for game_number, game_data in enumerate(data):
-        if not isinstance(game_data, list) or len(game_data) != 2:
-            print(f"Error: Invalid structure in game {game_number + 1}")
-            continue
+    # Team 1 - Data
 
-        team_1_picks, team_2_picks = game_data
+    team1 = data["team1"]
 
-        if len(team_1_picks) != 5 or len(team_2_picks) != 5:
-            print(f"Error: Incorrect number of picks in game {game_number + 1}")
-            continue
+    team1_score = team1["score"]
 
-        # Update Headers
-        update_text_source(f"blue_header_{game_number + 1}", f"Game {game_number + 1}")
-        update_text_source(f"red_header_{game_number + 1}", f"Game {game_number + 1}")
+    update_text_source(f"Score Team {side_team1}", team1_score)
 
-        # Update team 1 picks
-        for i, champ in enumerate(team_1_picks):
-            if picks_team_1[game_number][i] != champ:
-                picks_team_1[game_number][i] = champ
-                update_image_source(f"game_{game_number + 1}_blue_pick_{i + 1}_image", champ)
-                updated = True
+    team1_short_name = team1["team_name_short"]
+    team1_logo_url = team1["team_logo_url"]
+
+    response = requests.get(team1_logo_url)
+
+    if response.status_code == 200:
+        image = Image.open(BytesIO(response.content))
+        target_height = 200
+        width_percent = target_height / float(image.height)
+        target_width = int(image.width * width_percent)
+        resized_image = image.resize((target_width, target_height), Image.Resampling.LANCZOS)
+        os.makedirs(teamlogo_directory, exist_ok=True)
+        logo_path = os.path.join(teamlogo_directory, f"{team1_short_name}.png")
+        resized_image.save(logo_path)
+        print("Image downloaded and resized successfully!")
+        update_image_source(f"Team Logo {side_team1}", logo_path)
+    else:
+        print("Failed to download image. Status code:", response.status_code)
+
+    games = team1["games"]
+
+    for key in games:
+        game_number = key.replace("submatch", "").replace("-", "")
+
+        update_text_source(f"Game {game_number} Header {side_team1}", f"Game {game_number}")
+
+        picks = games[key]
+
+        for i, champ in enumerate(picks):
+            icon_path = os.path.join(image_directory, f"{champ}.png")
+            update_image_source(f"Game {game_number} {side_team1} Pick {i + 1}", icon_path)
+
+    # Team 2 - Data
+
+    team2 = data["team2"]
+
+    team2_score = team2["score"]
+
+    update_text_source(f"Score Team {side_team2}", team2_score)
+
+    team2_short_name = team2["team_name_short"]
+    team2_logo_url = team2["team_logo_url"]
+
+    response = requests.get(team2_logo_url)
+
+    if response.status_code == 200:
+        image = Image.open(BytesIO(response.content))
+        target_height = 200
+        width_percent = target_height / float(image.height)
+        target_width = int(image.width * width_percent)
+        resized_image = image.resize((target_width, target_height), Image.Resampling.LANCZOS)
+        os.makedirs(teamlogo_directory, exist_ok=True)
+        logo_path = os.path.join(teamlogo_directory, f"{team2_short_name}.png")
+        resized_image.save(logo_path)
+        print("Image downloaded and resized successfully!")
+        update_image_source(f"Team Logo {side_team2}", logo_path)
+    else:
+        print("Failed to download image. Status code:", response.status_code)
+
+    games = team2["games"]
+
+    for key in games:
+        game_number = key.replace("submatch", "").replace("-", "")
+
+        update_text_source(f"Game {game_number} Header {side_team2}", f"Game {game_number}")
+
+        picks = games[key]
 
         # Update team 2 picks
-        for i, champ in enumerate(team_2_picks):
-            if picks_team_2[game_number][i] != champ:
-                picks_team_2[game_number][i] = champ
-                update_image_source(f"game_{game_number + 1}_red_pick_{i + 1}_image", champ)
-                updated = True
-
-    if updated:
-        print("Overlay updated with new picks and headers.")
+        for i, champ in enumerate(picks):
+            icon_path = os.path.join(image_directory, f"{champ}.png")
+            update_image_source(f"Game {game_number} {side_team2} Pick {i + 1}", icon_path)
 
 
 def clear_all_picks():
     # Removes all champion images from OBS
     for game_number in range(5):
         for i in range(5):
-            hide_image_source(f"game_{game_number + 1}_blue_pick_{i + 1}_image")
-            hide_image_source(f"game_{game_number + 1}_red_pick_{i + 1}_image")
+            hide_image_source(f"Game {game_number + 1} Blue Pick {i + 1}")
+            hide_image_source(f"Game {game_number + 1} Red Pick {i + 1}")
 
 
 def clear_all_headers():
     # Clears all game headers
     for game_number in range(5):
-        update_text_source(f"blue_header_{game_number + 1}", "")
-        update_text_source(f"red_header_{game_number + 1}", "")
+        update_text_source(f"Game {game_number + 1} Header Blue", "")
+        update_text_source(f"Game {game_number + 1} Header Red", "")
 
 
-def update_image_source(image_source_name, champion_name):
+def update_image_source(image_source_name, path):
     # Updates an image source only if the image file exists
     source = obs.obs_get_source_by_name(image_source_name)
 
@@ -127,9 +181,8 @@ def update_image_source(image_source_name, champion_name):
         return
 
     # Check if the image file exists
-    icon_path = os.path.join(image_directory, f"{champion_name}.png")
-    if os.path.exists(icon_path):
-        update_image(source, icon_path)
+    if os.path.exists(path):
+        update_image(source, path)
     else:
         hide_image(source)
 

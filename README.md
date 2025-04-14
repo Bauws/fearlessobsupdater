@@ -1,6 +1,6 @@
 # Fearless OBS Updater
 
-This script updates your sources inside OBS to display the already picked champions of the series.  
+This Project is able to create sources in OBS and update them to display the already picked champions of the series.
 
 Currently, it is only possible to track matches of the 1st and 2nd division of the "Techniker Prime League". 
 This tool is meant for **Co-Streamers** of these divisions.
@@ -29,52 +29,24 @@ e.g. `C:\Users\MartinPC\Downloads\fearlessobsupdater-main\requirements.txt`
 
 1. Go to **Tools** -> **Scripts** in OBS.
 2. Under **Python-Settings**, insert the location of your local Python directory `C:/Users/{name}/AppData/Local/Programs/Python/Python39`
-3. Add the scripts `manual_fearless.py` and `auto_fearless.py` by clicking the **+** icon.
+3. Add the scripts `manual_fearless.py`, `auto_fearless.py` and `create_sources.py` by clicking the **+** icon.
 4. Close and reopen OBS to fully initialize the changes.
 5. Return to the scripts tab and start using them.
 
 ## Setup Sources in OBS
 
-The most important part is the naming of the sources!
-
-### Headers (Text Sources):
-
-```
-blue_header_1
-blue_header_2
-blue_header_3
-blue_header_4
-blue_header_5
-
-red_header_1
-red_header_2
-red_header_3
-red_header_4
-red_header_5
-```
-
-### Champion Icons (Image Sources):
-
-```
-game_1_blue_pick_1_image
-game_1_blue_pick_2_image
-game_1_blue_pick_3_image
-game_1_blue_pick_4_image
-game_1_blue_pick_5_image
-
-game_1_red_pick_1_image
-game_1_red_pick_2_image
-game_1_red_pick_3_image
-game_1_red_pick_4_image
-game_1_red_pick_5_image
-
-game_2_blue_pick_1_image
-[...]
-```
-
-Repeat this for all 5 picks and for all 5 games. If you leave one out, you will get error logs, but nothing critical will happen.
+Update: You can now automatically create the sources needed by running the `create_sources.py` script.
+This will create all available sources. You can either delete or hide the ones you don't need. The scripts **won't** cause
+any errors if a source is not present. It will also not create duplicates!
 
 ## How to Use the Scripts
+
+### Create Sources
+
+When you load the script for the first time it should automatically create all needed sources. If you deleted any sources and wish
+them to come back you can rerun the script at any time by clicking the refresh button pointed at in the screenshot.
+
+![img.png](examples/createsources.png)
 
 ### Auto Fearless
 
@@ -93,6 +65,9 @@ If you want to update the same match again, press the **reload** button at the b
 ![img.png](examples/scripts.png)
 
 By pressing the **Reset Overlay** button, you can clear all sources at once. You can now enter a new URL. If you want to reuse the same URL, you must press **Reset** (**"Zurücksetzen"**) at the bottom of the script window, which clears all input fields.
+
+In the dropdown menu you can select which team is placed on blue side. Team 1 will always be the left team from the Prime League website.
+If you switch the team on blue sides all Picks, Scores and the Team Logo will switch sides.
 
 ### Manual Fearless
 
