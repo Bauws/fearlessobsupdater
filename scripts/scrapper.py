@@ -66,9 +66,15 @@ def pick_helper_v2(url):
 
     match_info = soup.find('div', class_='content-match-head')
 
-    score = soup.find('span', class_='txt-score').text.split(':')
-    match_data['team1']['score'] = score[0]
-    match_data['team2']['score'] = score[1]
+    score_element = soup.find('span', class_='txt-score')
+    
+    if score_element:
+        score = soup.find('span', class_='txt-score').text.split(':')
+        match_data['team1']['score'] = score[0]
+        match_data['team2']['score'] = score[1]
+    else:
+        match_data['team1']['score'] = "0"
+        match_data['team2']['score'] = "0"
 
     team_names = match_info.find_all('h2')
     match_data['team1']['team_name_short'] = team_names[0].text
@@ -132,4 +138,4 @@ def pick_helper_v2(url):
 
 
 if __name__ == '__main__':
-    print(pick_helper_v2('https://www.primeleague.gg/de/matches/591905-teamorangegaming-academy-vs-a-one-man-army'))
+    data = pick_helper_v2('https://www.primeleague.gg/de/matches/593616-a-one-man-army-vs-dkb-xperion-nxt')
